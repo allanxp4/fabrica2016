@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Lista dos melhores alunos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Bolsa</th>
+            <th>Desconto</th>
+            <th>Data Nascimento</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    $.ajax({
+        url: "http://localhost:58692/api/aluno/",
+        method: "GET",
+        success: function (data) {
+            $.each(data, function (index, item) {
+                //Criar uma nova linha
+                var linha = $("<tr>");
+                linha.append($("<td>").text(item.Nome));
+                linha.append($("<td>").text(item.Bolsa));
+                linha.append($("<td>").text(item.Desconto));
+                linha.append($("<td>").text(item.DataNascimento));
+
+                $("tbody").append(linha);
+            });
+        }
+    })
+</script>
