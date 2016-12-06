@@ -4,6 +4,23 @@
 
 <h2>Lista dos melhores alunos</h2>
 
+<div class="form-group">
+    <input id="nome" type="text" name="nome" placeholder="Nome" class="form-control" />
+</div>
+<div class="form-group">
+    <input type="text" name="desconto" placeholder="Desconto" class="form-control" />
+</div>
+<div class="form-group">
+    <input type="text" id="data" name="data" placeholder="Data Nascimento" class="form-control" />
+</div>
+<div class="form-group">
+    <input type="checkbox" id="bolsa" name="bolsa" value="true" />
+    <label for="bolsa">Bolsa</label>
+</div>
+<div class="form-group">
+    <input id="btn-salvar" type="button" value="Salvar" class="btn btn-primary" />
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -16,21 +33,51 @@
     <tbody></tbody>
 </table>
 
-<script>
-    $.ajax({
-        url: "http://localhost:58692/api/aluno/",
-        method: "GET",
-        success: function (data) {
-            $.each(data, function (index, item) {
-                //Criar uma nova linha
-                var linha = $("<tr>");
-                linha.append($("<td>").text(item.Nome));
-                linha.append($("<td>").text(item.Bolsa));
-                linha.append($("<td>").text(item.Desconto));
-                linha.append($("<td>").text(item.DataNascimento));
+@section scripts {
+    <script>
+        $().ready(function () {
+            listar();
+        });
 
-                $("tbody").append(linha);
+        $("#btn-salvar").on("click", function () {
+            $.ajax({
+                url: "http://localhost:58692/api/aluno/",
+                method: "POST",
+                data: {
+                    "Nome": $("#nome").val(),
+                    "DataNascimento": $("#data").val(),
+                    "Desconto": $("#desconto").val(),
+                    "Bolsa": $("#bolsa").is(":checked"),
+                    "GrupoId": 1 //Gambi
+                },
+                success: function (data) {
+                    listar();
+                },
+                error: function (data) {
+                    alert("Erro ao cadastrar - ");
+                }
             });
+        });
+
+        function listar() {
+            $.ajax({
+                url: "http://localhost:58692/api/aluno/",
+                method: "GET",
+                success: function (data) {
+                    $("tbody").empty();
+                    $.each(data, function (index, item) {
+                        //Criar uma nova linha
+                        var linha = $("<tr>");
+                        linha.append($("<td>").text(item.Nome));
+                        linha.append($("<td>").text(item.Bolsa));
+                        linha.append($("<td>").text(item.Desconto));
+                        linha.append($("<td>").text(item.DataNascimento));
+
+                        $("tbody").append(linha);
+                    });
+                }
+            })
         }
-    })
-</script>
+
+    </script>
+}
